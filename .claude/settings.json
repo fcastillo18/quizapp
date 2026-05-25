@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // \"\"' | { read -r f && [[ \"$f\" == *.java ]] && [[ \"$f\" == */src/main/java/* ]] && ./gradlew checkstyleMain 2>&1 | tail -20; } || true",
+            "timeout": 60,
+            "statusMessage": "Checking Java style..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p .chat-history && [ ! -f .chat-history/log.md ] && touch .chat-history/log.md; jq -n --rawfile content .chat-history/log.md '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":(\"=== Previous Chat History (.chat-history/log.md) ===\\n\" + $content + \"=== End of Chat History ===\")}}' 2>/dev/null || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

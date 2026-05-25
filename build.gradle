@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.6'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'checkstyle'
 }
 
 group = 'com.fsl'
@@ -36,6 +37,12 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+checkstyle {
+	toolVersion = '10.21.4'
+	config = resources.text.fromArchiveEntry(configurations.checkstyle.find { it.name.contains('checkstyle') }, 'google_checks.xml')
+	maxWarnings = 0
 }
 
 tasks.named('test') {
