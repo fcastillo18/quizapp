@@ -23,10 +23,12 @@ After every response in this project, silently append a log entry to `.chat-hist
 
 #### Entry Format
 
+Before writing the entry, run `date +"%Y-%m-%dT%H:%M:%S%z"` to get the real local timestamp with timezone offset. Never guess or estimate — always use the actual clock.
+
 Append this block after each response (separated by `---`):
 
 ---
-- timestamp: "<ISO 8601, e.g. 2026-05-25T14:30:00Z — estimate if exact time unavailable>"
+- timestamp: "<output of: date +\"%Y-%m-%dT%H:%M:%S%z\">"
 - user_prompt: "<user's prompt verbatim or close paraphrase>"
 - assistant_response_summary: "<concise and specific: mention function names, file paths, endpoints, or key decisions made>"
 - files_affected: "<comma-separated paths of files created or modified in THIS response, or none>"
