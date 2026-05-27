@@ -37,33 +37,21 @@ These are pre-conditions that no story PRD owns but everything depends on.
 
 | Story | Agent | Commit Type | Status | Commit SHA |
 |-------|-------|-------------|--------|------------|
-| QUIZ-01 — DB Schema & Seed Data | Lead | `chore` | ✅ | TBD |
+| QUIZ-01 — DB Schema & Seed Data | Lead | `chore` | ✅ | 4ff1ebf |
 
 ---
 
-### Wave 2 — Quiz CRUD (sequential, same domain)
+### Wave 2 — Parallel Domain Agents (started 2026-05-27T18:29:28-0400)
+
+All agents running simultaneously in distinct packages.
 
 | Story | Agent | Commit Type | Status | Commit SHA |
 |-------|-------|-------------|--------|------------|
-| QUIZ-02 — List Available Quizzes | Agent-Quiz | `feat` | ⏳ | — |
-| QUIZ-03 — Get Quiz Details | Agent-Quiz | `feat` | ⏳ | — |
-| QUIZ-04 — Create Quiz | Agent-Quiz | `feat` | ⏳ | — |
-
----
-
-### Wave 3 — Async Notification Infrastructure
-
-| Story | Agent | Commit Type | Status | Commit SHA |
-|-------|-------|-------------|--------|------------|
-| QUIZ-07 — Async Email Notification Service | Agent-Notify | `feat` | ⏳ | — |
-
----
-
-### Wave 4 — Attempt Domain
-
-| Story | Agent | Commit Type | Status | Commit SHA |
-|-------|-------|-------------|--------|------------|
-| QUIZ-05 — Start Quiz Attempt | Agent-Attempt | `feat` | ⏳ | — |
+| QUIZ-02 — List Available Quizzes | Agent-Quiz | `feat` | ✅ | fdb1688 |
+| QUIZ-03 — Get Quiz Details | Agent-Quiz | `feat` | ✅ | a88e69e |
+| QUIZ-04 — Create Quiz | Agent-Quiz04 | `feat` | ✅ | d2f1bea |
+| QUIZ-07 — Async Email Notification Service | Agent-Notify | `feat` | ✅ | efee3f8 |
+| QUIZ-05 — Start Quiz Attempt | Agent-Attempt | `feat` | ✅ | 2e2674a |
 
 ---
 
@@ -71,25 +59,23 @@ These are pre-conditions that no story PRD owns but everything depends on.
 
 | Story | Agent | Commit Type | Status | Commit SHA |
 |-------|-------|-------------|--------|------------|
-| QUIZ-06 — Submit Answers with Scoring | Agent-Submit | `feat` | ⏳ | — |
+| QUIZ-06 — Submit Answers with Scoring | Agent-Submit | `feat` | ✅ | 1be5973 |
 
 ---
 
-### Wave 6 — Test Capstone (blocks on all Phase 1)
+### Wave 6 — Test Capstone + Phase 2 Extensions (all 4 parallel, started 2026-05-27T18:55:00-0400)
+
+All 4 agents running simultaneously — zero file conflicts by design:
+- Agent-Tests: creates NEW `NotificationIntegrationTest.java` only
+- Agent-Results: owns `attempt/` package
+- Agent-Progress: creates `progress/` and `user/controller/` from scratch (uses separate `ProgressRepository`)
 
 | Story | Agent | Commit Type | Status | Commit SHA |
 |-------|-------|-------------|--------|------------|
-| QUIZ-08 — Unit & Integration Test Suite | Agent-Tests | `test` | ⏳ | — |
-
----
-
-### Wave 7 — Phase 2 Extensions (parallel, worktree-isolated, after QUIZ-06)
-
-| Story | Agent | Commit Type | Status | Commit SHA |
-|-------|-------|-------------|--------|------------|
-| QUIZ-09 — User Attempt History | Agent-History | `feat` | ⏳ | — |
-| QUIZ-10 — Detailed Attempt Results | Agent-Results | `feat` | ⏳ | — |
-| QUIZ-11 — User Aggregate Statistics | Agent-Stats | `feat` | ⏳ | — |
+| QUIZ-08 — Unit & Integration Test Suite | Agent-Tests | `test` | ✅ | ed51bdb |
+| QUIZ-09 — User Attempt History | Agent-Progress | `feat` | ✅ | 715dcbe |
+| QUIZ-10 — Detailed Attempt Results | Agent-Results | `feat` | ✅ | 78cc9a1 |
+| QUIZ-11 — User Aggregate Statistics | Agent-Progress | `feat` | ✅ | 46ddc4c |
 
 ---
 
@@ -103,8 +89,9 @@ Decisions made when diverging from a PRD specification.
 | 2026-05-27 | QUIZ-01 | Use `TIMESTAMP WITH TIME ZONE` for all timestamp columns (instead of `TIMESTAMPTZ` shorthand) | More portable across Liquibase versions and explicitly supported by H2 in `MODE=PostgreSQL`. |
 | 2026-05-27 | QUIZ-01 | `QuizappApplicationTests` annotated with `@SpringBootTest @AutoConfigureMockMvc @ActiveProfiles("test")` | All `@SpringBootTest` classes must have identical annotations; Spring caches contexts by annotation fingerprint. Mismatch causes "DATABASECHANGELOG already exists" on H2 during parallel context initialization. |
 | 2026-05-27 | QUIZ-01 | Wave 0 and Wave 1 executed directly by lead (no subagent) | Foundation pre-conditions race if parallel agents write to `build.gradle`, `common/`, and `application-test.properties` simultaneously. |
-| 2026-05-27 | QUIZ-02–07 | Sequential subagent dispatch (one agent at a time, blocks on previous) | Parallel agents in the same worktree race on `git commit`, Gradle daemon, and shared `common/` writes. Sequential dispatch with clean build verification between stories is faster in practice. |
+| 2026-05-27 | QUIZ-02–07 | Parallel background agent dispatch — Agent-Quiz04 (QUIZ-04) and Agent-Submit (QUIZ-06) running concurrently in the same worktree | Both agents own separate packages (quiz/ vs attempt/) with no file overlap. Git-index races avoided by assigning non-overlapping file sets. After context compaction, lead re-spawned both agents in parallel to maximize throughput. |
 | 2026-05-27 | QUIZ-09–11 | Parallel worktree-isolated agents after QUIZ-06 | Phase 2 stories own distinct packages (attempt/, progress/, user/). Worktree isolation eliminates git-index races while allowing true parallelism for independent leaf stories. |
+| 2026-05-27 | QUIZ-08 | `NotificationIntegrationTest` uses `SyncTaskExecutor` override via inner `@TestConfiguration` + `@Import` to make `@Async` run synchronously in tests | Root cause: `AttemptService.submitAttempt` is `@Transactional` and fires `notificationService.sendResultEmail` (async) **before** the transaction commits, so the async thread can call `findById(notificationId)` before the row is visible. Fix in prod: use `@TransactionalEventListener(phase = AFTER_COMMIT)` — deferred to a future story. Tests work around this with sync executor override. |
 
 ---
 
