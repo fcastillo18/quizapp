@@ -100,6 +100,9 @@
 - The async notification must not be awaited before returning the HTTP response.
 - `answers` table rows and `attempt` update are written atomically; notification dispatch happens outside the main transaction.
 - Endpoint documented in SpringDoc OpenAPI with 200, 400, 404, and 409 response examples.
+- **Performance:** submission response time (scoring + persistence) must be < 500 ms p99 (success criterion from PRD §1).
+- All timestamps in responses use ISO 8601 UTC format (e.g., `2026-05-27T14:00:00Z`).
+- Error responses use the standard shape: `{ "status": <code>, "message": "<human-readable>", "timestamp": "<ISO>" }` (applicable to HTTP 404 and 409 cases).
 
 ---
 

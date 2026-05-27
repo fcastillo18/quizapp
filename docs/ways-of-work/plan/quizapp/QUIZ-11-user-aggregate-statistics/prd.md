@@ -3,7 +3,8 @@
 ## Epic
 [QuizApp REST API PRD](../../../prd.md)
 
-**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-06](../QUIZ-06-submit-answers-scoring/prd.md)
+**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-05](../QUIZ-05-start-quiz-attempt/prd.md), [QUIZ-06](../QUIZ-06-submit-answers-scoring/prd.md)  
+**Required by:** — (none)
 
 **Phase:** 2
 
@@ -61,6 +62,8 @@
 - Never returns HTTP 404 for a `userId` — if the user exists but has no completed attempts, return zeroed values. If `userId` format is invalid (malformed UUID), return HTTP 400.
 - Endpoint documented in SpringDoc OpenAPI with a 200 response example.
 - Query executes in a single round trip to the database.
+- All timestamps in responses use ISO 8601 UTC format (e.g., `2026-05-27T14:00:00Z`).
+- Error responses use the standard shape: `{ "status": <code>, "message": "<human-readable>", "timestamp": "<ISO>" }` (applicable to HTTP 400 malformed UUID case).
 
 ---
 
@@ -75,6 +78,20 @@
 - [ ] Open attempts (not yet submitted) are excluded from both counts.
 - [ ] Malformed `userId` (not a valid UUID) returns HTTP 400.
 - [ ] Swagger UI documents the 200 response.
+
+---
+
+## Testing Requirements
+
+Integration tests (`@SpringBootTest`, `@ActiveProfiles("test")`, `MockMvc`):
+
+| Scenario | Expected |
+|---|---|
+| `GET /users/{userId}/stats` for user with 3 submitted attempts (60%, 80%, 100%) | HTTP 200; `totalAttempts = 3`, `averageScore = 80.00` |
+| `GET /users/{userId}/stats` for user with no completed attempts | HTTP 200; `totalAttempts = 0`, `averageScore = 0.00` |
+| Open (not yet submitted) attempts excluded from counts | `totalAttempts` does not include open attempts |
+| `GET /users/{malformedUUID}/stats` | HTTP 400 with standard error body |
+| `averageScore` rounded to two decimal places | Floating point result is correctly rounded (e.g., 66.67 for 3 attempts at 60%, 70%, 70%) |
 
 ---
 

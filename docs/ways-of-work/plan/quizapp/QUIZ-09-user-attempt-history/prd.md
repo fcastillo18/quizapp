@@ -3,7 +3,8 @@
 ## Epic
 [QuizApp REST API PRD](../../../prd.md)
 
-**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-06](../QUIZ-06-submit-answers-scoring/prd.md)
+**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-05](../QUIZ-05-start-quiz-attempt/prd.md), [QUIZ-06](../QUIZ-06-submit-answers-scoring/prd.md)  
+**Required by:** — (none)
 
 **Phase:** 2
 
@@ -58,6 +59,8 @@
 - No pagination required for this scope (extension point — see Out of Scope).
 - Endpoint documented in SpringDoc OpenAPI with a 200 response example.
 - `quizTitle` must be retrieved via a JOIN query, not N+1 lazy loading.
+- All timestamps in responses use ISO 8601 UTC format (e.g., `2026-05-27T14:00:00Z`).
+- Error responses use the standard shape: `{ "status": <code>, "message": "<human-readable>", "timestamp": "<ISO>" }` (applicable to any future 4xx cases on this endpoint).
 
 ---
 
@@ -71,6 +74,21 @@
 - [ ] Open attempts (not yet submitted) appear in the list with `submittedAt`, `score`, `percentage` as null.
 - [ ] Retaking the same quiz creates two separate entries in the list.
 - [ ] Swagger UI documents the 200 response with the full response schema.
+
+---
+
+## Testing Requirements
+
+Integration tests (`@SpringBootTest`, `@ActiveProfiles("test")`, `MockMvc`):
+
+| Scenario | Expected |
+|---|---|
+| `GET /users/{userId}/attempts` for user with submitted attempts | HTTP 200; array contains correct `attemptId`, `quizTitle`, `score`, `percentage` |
+| `GET /users/{userId}/attempts` for user with no attempts | HTTP 200; response is `[]` |
+| `GET /users/{userId}/attempts` includes open (not yet submitted) attempts | Both submitted and open attempts in list; open entries have `submittedAt`, `score`, `percentage` as null |
+| Retaking the same quiz creates two separate entries | Array size = 2; both entries reference the same `quizId` |
+| Results ordered most-recent first | First entry has the latest `startedAt` timestamp |
+| `quizTitle` is correct and non-null for each entry | `quizTitle` matches the quiz created in test setup |
 
 ---
 

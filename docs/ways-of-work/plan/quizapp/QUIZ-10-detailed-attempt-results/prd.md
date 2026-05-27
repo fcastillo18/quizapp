@@ -3,7 +3,8 @@
 ## Epic
 [QuizApp REST API PRD](../../../prd.md)
 
-**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-06](../QUIZ-06-submit-answers-scoring/prd.md)
+**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-05](../QUIZ-05-start-quiz-attempt/prd.md), [QUIZ-06](../QUIZ-06-submit-answers-scoring/prd.md)  
+**Required by:** — (none)
 
 **Phase:** 2
 
@@ -76,6 +77,8 @@
 
 - Response must include both `selectedOptionText` and `correctOptionText` to avoid requiring the client to look up option text separately.
 - Endpoint documented in SpringDoc OpenAPI with 200 and 404 response examples.
+- All timestamps in responses use ISO 8601 UTC format (e.g., `2026-05-27T14:00:00Z`).
+- Error responses use the standard shape: `{ "status": <code>, "message": "<human-readable>", "timestamp": "<ISO>" }` (applicable to HTTP 404 cases).
 
 ---
 
@@ -89,6 +92,21 @@
 - [ ] `GET /attempts/nonexistent-id` returns HTTP 404.
 - [ ] `GET /attempts/{openAttemptId}` (not yet submitted) returns HTTP 404.
 - [ ] Swagger UI documents 200 and 404 responses with full schema.
+
+---
+
+## Testing Requirements
+
+Integration tests (`@SpringBootTest`, `@ActiveProfiles("test")`, `MockMvc`):
+
+| Scenario | Expected |
+|---|---|
+| `GET /attempts/{validSubmittedId}` for a completed attempt | HTTP 200; response contains all fields including `results` array with per-question breakdown |
+| `results` correctness: correct and incorrect answers reflected accurately | Each entry has `correct = true/false` matching actual submission |
+| `GET /attempts/nonexistent-id` | HTTP 404 with standard error body |
+| `GET /attempts/{openAttemptId}` (attempt not yet submitted) | HTTP 404 with standard error body |
+| `results` ordered by question `position` ascending | First result entry has the lowest `position` value |
+| `correctOptionId` and `correctOptionText` present after submission | Response includes these fields (post-submission disclosure is valid) |
 
 ---
 

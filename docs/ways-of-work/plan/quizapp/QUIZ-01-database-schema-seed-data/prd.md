@@ -81,3 +81,7 @@
 - Indexes beyond PKs and FKs.
 - Data archival or soft-delete columns.
 - Any migration beyond the initial schema + seed data (future migrations are other tickets).
+- User registration, login, or JWT/session authentication — `userId` is a trusted caller-supplied value across all endpoints.
+- Question-level partial updates — quiz content is immutable after creation.
+- Rate limiting or API key management.
+- Admin dashboard or frontend UI.

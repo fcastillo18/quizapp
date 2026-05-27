@@ -4,7 +4,7 @@
 [QuizApp REST API PRD](../../../prd.md)
 
 **Depends on:** [QUIZ-01 — Database Schema & Seed Data](../QUIZ-01-database-schema-seed-data/prd.md)  
-**Required by:** [QUIZ-06 — Submit Quiz Answers with Scoring](../QUIZ-06-submit-answers-scoring/prd.md)
+**Required by:** [QUIZ-06 — Submit Quiz Answers with Scoring](../QUIZ-06-submit-answers-scoring/prd.md), [QUIZ-08](../QUIZ-08-unit-integration-test-suite/prd.md)
 
 ---
 

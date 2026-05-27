@@ -3,7 +3,8 @@
 ## Epic
 [QuizApp REST API PRD](../../../prd.md)
 
-**Depends on:** All Phase 1 tickets (QUIZ-01 through QUIZ-07)
+**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-02](../QUIZ-02-list-available-quizzes/prd.md), [QUIZ-03](../QUIZ-03-get-quiz-details/prd.md), [QUIZ-04](../QUIZ-04-create-quiz/prd.md), [QUIZ-05](../QUIZ-05-start-quiz-attempt/prd.md), [QUIZ-06](../QUIZ-06-submit-answers-scoring/prd.md), [QUIZ-07](../QUIZ-07-async-email-notification/prd.md)  
+**Required by:** — (none)
 
 ---
 
