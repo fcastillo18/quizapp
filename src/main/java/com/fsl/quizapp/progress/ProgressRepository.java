@@ -25,13 +25,14 @@ public interface ProgressRepository extends JpaRepository<Attempt, UUID> {
 
   /**
    * Returns aggregate statistics for submitted attempts of the given user.
-   * Result is a single {@code Object[]} where index 0 is COUNT (Long) and
-   * index 1 is AVG percentage (Double/BigDecimal), using COALESCE to avoid null when no rows.
+   * The list always contains exactly one element: an {@code Object[]} where index 0 is COUNT
+   * (Long) and index 1 is AVG percentage (Double/BigDecimal). COALESCE ensures index 1 is
+   * never null.
    *
    * @param userId the user's UUID
-   * @return single-element array containing COUNT and AVG percentage
+   * @return single-element list containing one row of [COUNT, AVG]
    */
   @Query("SELECT COUNT(a), COALESCE(AVG(a.percentage), 0) "
       + "FROM Attempt a WHERE a.userId = :userId AND a.submittedAt IS NOT NULL")
-  Object[] findStatsByUserId(@Param("userId") UUID userId);
+  List<Object[]> findStatsByUserId(@Param("userId") UUID userId);
 }

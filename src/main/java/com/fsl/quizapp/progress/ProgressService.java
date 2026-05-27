@@ -35,7 +35,7 @@ public class ProgressService {
    * @return user statistics including total submitted attempts and average score
    */
   public UserStatsResponse getUserStats(UUID userId) {
-    Object[] row = progressRepository.findStatsByUserId(userId);
+    Object[] row = progressRepository.findStatsByUserId(userId).get(0);
     long totalAttempts = ((Number) row[0]).longValue();
     Object avg = row[1];
     BigDecimal averageScore;
