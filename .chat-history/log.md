@@ -57,3 +57,27 @@
 - user_prompt: "<task-notification> Agent-Progress (QUIZ-11) completed"
 - assistant_response_summary: "QUIZ-11 committed (46ddc4c). Ran full ./gradlew test — BUILD SUCCESSFUL. All 11 stories (QUIZ-01 through QUIZ-11) are committed on feature/quizapp-implementation. Updated EXECUTION-PROGRESS.md: QUIZ-11 marked done."
 - files_affected: "docs/ways-of-work/plan/quizapp/EXECUTION-PROGRESS.md"
+
+---
+- timestamp: "2026-05-27T19:13:08-0400"
+- user_prompt: "commit progress and log"
+- assistant_response_summary: "Staged and committed .chat-history/log.md and EXECUTION-PROGRESS.md as 'docs: update execution progress and chat history log' (e5d850d). Working tree clean."
+- files_affected: "none"
+
+---
+- timestamp: "2026-05-27T19:14:59-0400"
+- user_prompt: "<task-notification> Stop hook — security review flagged 3 IDOR findings on AttemptController.getAttemptDetail, UserController.getUserAttempts, UserController.getUserStats"
+- assistant_response_summary: "Surfaced 3 HIGH IDOR findings to user. Explained that fixes require Spring Security + auth principal infrastructure not yet in place. User chose 'Acknowledge + skip for now' — logged as known limitation for a demo project with no auth layer. No code changes made."
+- files_affected: "none"
+
+---
+- timestamp: "2026-05-27T19:21:11-0400"
+- user_prompt: "please go ahead with the plan"
+- assistant_response_summary: "Executed all 5 tasks from the E2E plan. Created EndToEndQuizFlowTest.java with a single @Test method covering all 11 API usage steps: GET /quizzes, find quiz by title, GET /quizzes/{id} (no correctOptionId), POST /quizzes/{id}/attempts, POST /attempts/{id}/submit (4/5 = 80%, feedback, per-question results), verify NotificationService mock, GET /users/{userId}/attempts (1 completed attempt), retake attempt, verify history shows 2 entries. One plan adjustment: asserted submittedAt not empty instead of status field (AttemptSummaryResponse has no status). Full suite green, checkstyle clean, committed."
+- files_affected: "src/test/java/com/fsl/quizapp/EndToEndQuizFlowTest.java"
+
+---
+- timestamp: "2026-05-27T19:13:19-0400"
+- user_prompt: "What would be the best way to automate this validation? Create a plan for an integration test covering all 11 API usage steps. Assume all features are in place; include a scaffold-check statement to identify missing classes/files."
+- assistant_response_summary: "Created plan at /Users/fcastilloatg/.claude/plans/what-would-be-the-purrfect-aurora.md. Plan creates EndToEndQuizFlowTest.java as a single @Test method exercising all 11 steps: GET /quizzes, GET /quizzes/{id}, POST attempts, submit 4/5 answers (80%), verify notification mock, GET /users/{userId}/attempts (QUIZ-09), retake, verify history shows 2 attempts. Noted two instructions.md vs. code discrepancies: quiz name 'Agent Fundamentals' → 'Agent Design Patterns' (seed data), 80% feedback 'Good job!' → 'Excellent work! Keep it up!' (actual ScoringService). Plan includes scaffold pre-condition to confirm QUIZ-09 endpoint exists before writing test code."
+- files_affected: "none"
