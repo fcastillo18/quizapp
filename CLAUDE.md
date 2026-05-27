@@ -1,5 +1,44 @@
 # CLAUDE.md
 
+> **MANDATORY — READ FIRST:** After EVERY response without exception, append a log entry to `.chat-history/log.md` using the Write tool. This is non-negotiable and must happen even for trivial responses, clarifying questions, or one-liners. Do it silently — no announcement.
+
+## Chat History
+
+### Session Context
+At session start, a hook automatically reads `.chat-history/log.md` and injects its contents into context as "Previous Chat History". Review it to understand prior work.
+
+### Logging (After Every Response)
+
+**This is a mandatory step at the end of every response.** Use the Write tool to append to `.chat-history/log.md`. Never skip this.
+
+### Session Context
+At session start, a hook automatically reads `.chat-history/log.md` and injects its contents into context as "Previous Chat History". Review it to understand prior work.
+
+### Logging (After Every Response)
+After every response in this project, silently append a log entry to `.chat-history/log.md`.
+
+- Create `.chat-history/` and `log.md` if missing
+- Never delete previous entries
+- Never ask for confirmation or announce that you logged
+
+#### Entry Format
+
+Append this block after each response (separated by `---`):
+
+---
+- timestamp: "<ISO 8601, e.g. 2026-05-25T14:30:00Z — estimate if exact time unavailable>"
+- user_prompt: "<user's prompt verbatim or close paraphrase>"
+- assistant_response_summary: "<concise and specific: mention function names, file paths, endpoints, or key decisions made>"
+- files_affected: "<comma-separated paths of files created or modified in THIS response, or none>"
+
+### Rules
+- Never skip any prompt/response pair
+- `files_affected`: only files explicitly created or modified in this response
+- `assistant_response_summary`: specific enough to reconstruct what happened
+- Do this silently — no "I've logged this" or similar messages
+
+---
+
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
@@ -63,36 +102,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
-
----
-
-# Chat History
-
-## Session Context
-At session start, a hook automatically reads `.chat-history/log.md` and injects its contents into context as "Previous Chat History". Review it to understand prior work.
-
-## Logging (After Every Response)
-After every response in this project, silently append a log entry to `.chat-history/log.md`.
-
-- Create `.chat-history/` and `log.md` if missing
-- Never delete previous entries
-- Never ask for confirmation or announce that you logged
-
-### Entry Format
-
-Append this block after each response (separated by `---`):
-
----
-- timestamp: "<ISO 8601, e.g. 2026-05-25T14:30:00Z — estimate if exact time unavailable>"
-- user_prompt: "<user's prompt verbatim or close paraphrase>"
-- assistant_response_summary: "<concise and specific: mention function names, file paths, endpoints, or key decisions made>"
-- files_affected: "<comma-separated paths of files created or modified in THIS response, or none>"
-
-### Rules
-- Never skip any prompt/response pair
-- `files_affected`: only files explicitly created or modified in this response
-- `assistant_response_summary`: specific enough to reconstruct what happened
-- Do this silently — no "I've logged this" or similar messages
 
 ---
 
