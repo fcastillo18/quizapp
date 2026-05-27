@@ -3,7 +3,8 @@
 ## Epic
 [QuizApp REST API PRD](../../../prd.md)
 
-**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-05](../QUIZ-05-start-quiz-attempt/prd.md), [QUIZ-07](../QUIZ-07-async-email-notification/prd.md)
+**Depends on:** [QUIZ-01](../QUIZ-01-database-schema-seed-data/prd.md), [QUIZ-05](../QUIZ-05-start-quiz-attempt/prd.md), [QUIZ-07](../QUIZ-07-async-email-notification/prd.md)  
+**Required by:** [QUIZ-08](../QUIZ-08-unit-integration-test-suite/prd.md), [QUIZ-09](../QUIZ-09-user-attempt-history/prd.md), [QUIZ-10](../QUIZ-10-detailed-attempt-results/prd.md), [QUIZ-11](../QUIZ-11-user-aggregate-statistics/prd.md)
 
 ---
 
