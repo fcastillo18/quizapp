@@ -1,5 +1,6 @@
 package com.fsl.quizapp.attempt.controller;
 
+import com.fsl.quizapp.attempt.dto.AttemptDetailResponse;
 import com.fsl.quizapp.attempt.dto.AttemptStartResponse;
 import com.fsl.quizapp.attempt.dto.StartAttemptRequest;
 import com.fsl.quizapp.attempt.dto.SubmitAttemptRequest;
@@ -11,6 +12,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,5 +58,16 @@ public class AttemptController {
       @PathVariable UUID attemptId,
       @Valid @RequestBody SubmitAttemptRequest request) {
     return ResponseEntity.ok(attemptService.submitAttempt(attemptId, request));
+  }
+
+  /**
+   * Returns the full per-question breakdown of a submitted attempt.
+   *
+   * @param attemptId the UUID of the attempt to retrieve
+   * @return 200 OK with score, percentage, and per-question results
+   */
+  @GetMapping("/attempts/{attemptId}")
+  public ResponseEntity<AttemptDetailResponse> getAttemptDetail(@PathVariable UUID attemptId) {
+    return ResponseEntity.ok(attemptService.getAttemptDetail(attemptId));
   }
 }

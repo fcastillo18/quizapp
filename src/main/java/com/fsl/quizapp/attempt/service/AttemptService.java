@@ -1,8 +1,10 @@
 package com.fsl.quizapp.attempt.service;
 
+import com.fsl.quizapp.attempt.dto.AttemptDetailResponse;
 import com.fsl.quizapp.attempt.dto.AttemptOptionResponse;
 import com.fsl.quizapp.attempt.dto.AttemptQuestionResponse;
 import com.fsl.quizapp.attempt.dto.AttemptStartResponse;
+import com.fsl.quizapp.attempt.dto.QuestionDetailResult;
 import com.fsl.quizapp.attempt.dto.QuestionResultResponse;
 import com.fsl.quizapp.attempt.dto.StartAttemptRequest;
 import com.fsl.quizapp.attempt.dto.SubmitAnswerRequest;
@@ -18,6 +20,7 @@ import com.fsl.quizapp.notification.NotificationService;
 import com.fsl.quizapp.notification.entity.Notification;
 import com.fsl.quizapp.notification.entity.NotificationStatus;
 import com.fsl.quizapp.notification.repository.NotificationRepository;
+import com.fsl.quizapp.quiz.entity.Option;
 import com.fsl.quizapp.quiz.entity.Question;
 import com.fsl.quizapp.quiz.entity.Quiz;
 import com.fsl.quizapp.quiz.repository.QuizRepository;
@@ -150,5 +153,60 @@ public class AttemptService {
         attempt.getSubmittedAt());
 
     return new SubmitAttemptResponse(score, totalQuestions, percentage, feedback, results);
+  }
+
+  /**
+   * Returns the full per-question breakdown of a submitted attempt.
+   *
+   * @param attemptId the UUID of the attempt to retrieve
+   * @return the attempt detail response with score, percentage, and per-question results
+   * @throws ResourceNotFoundException if the attempt does not exist or has not been submitted
+   */
+  @Transactional
+  public AttemptDetailResponse getAttemptDetail(UUID attemptId) {
+    Attempt attempt = attemptRepository.findById(attemptId)
+        .orElseThrow(() -> new ResourceNotFoundException("Attempt", attemptId));
+    if (attempt.getSubmittedAt() == null) {
+      throw new ResourceNotFoundException("Attempt", attemptId);
+    }
+
+    Quiz quiz = quizRepository.findByIdWithQuestionsAndOptions(attempt.getQuiz().getId())
+        .orElseThrow(() -> new ResourceNotFoundException("Quiz", attempt.getQuiz().getId()));
+
+    Map<UUID, Question> questionsById = quiz.getQuestions().stream()
+        .collect(Collectors.toMap(Question::getId, q -> q));
+
+    Map<UUID, String> optionTextById = quiz.getQuestions().stream()
+        .flatMap(q -> q.getOptions().stream())
+        .collect(Collectors.toMap(Option::getId, Option::getText));
+
+    List<Answer> answers = answerRepository.findByAttemptId(attemptId);
+    List<QuestionDetailResult> results = answers.stream()
+        .sorted(Comparator.comparingInt(a -> questionsById.get(a.getQuestionId()).getPosition()))
+        .map(a -> {
+          Question q = questionsById.get(a.getQuestionId());
+          return new QuestionDetailResult(
+              q.getId(),
+              q.getText(),
+              a.getSelectedOptionId(),
+              optionTextById.get(a.getSelectedOptionId()),
+              q.getCorrectOptionId(),
+              optionTextById.get(q.getCorrectOptionId()),
+              a.isCorrect(),
+              q.getExplanation());
+        })
+        .toList();
+
+    return new AttemptDetailResponse(
+        attempt.getId(),
+        attempt.getUserId(),
+        quiz.getId(),
+        quiz.getTitle(),
+        attempt.getStartedAt(),
+        attempt.getSubmittedAt(),
+        attempt.getScore(),
+        quiz.getQuestions().size(),
+        attempt.getPercentage(),
+        results);
   }
 }
