@@ -1,13 +1,21 @@
 package com.fsl.quizapp.quiz;
 
+import static org.hamcrest.Matchers.endsWith;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fsl.quizapp.common.exception.ResourceNotFoundException;
 import com.fsl.quizapp.quiz.controller.QuizController;
+import com.fsl.quizapp.quiz.dto.CreateOptionRequest;
+import com.fsl.quizapp.quiz.dto.CreateQuestionRequest;
+import com.fsl.quizapp.quiz.dto.CreateQuizRequest;
+import com.fsl.quizapp.quiz.dto.CreatedQuizResponse;
 import com.fsl.quizapp.quiz.dto.OptionResponse;
 import com.fsl.quizapp.quiz.dto.QuestionResponse;
 import com.fsl.quizapp.quiz.dto.QuizDetailResponse;
@@ -18,6 +26,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -93,5 +102,76 @@ class QuizControllerTest {
 
     mockMvc.perform(get("/quizzes/" + unknown))
         .andExpect(status().isNotFound());
+  }
+
+  /** POST /quizzes returns 201 with body containing the new quiz ID and a Location header. */
+  @Test
+  void createQuiz_validRequest_returns201WithLocationHeader() throws Exception {
+    UUID newId = UUID.fromString("aaaaaaaa-0000-0000-0000-000000000001");
+    when(quizService.createQuiz(any(CreateQuizRequest.class)))
+        .thenReturn(new CreatedQuizResponse(newId));
+
+    CreateQuizRequest request = new CreateQuizRequest(
+        "New Quiz",
+        "A description",
+        List.of(new CreateQuestionRequest(
+            "What is Java?",
+            "It is a language",
+            1,
+            List.of(
+                new CreateOptionRequest("A language", 1),
+                new CreateOptionRequest("An OS", 2)),
+            1)));
+
+    mockMvc.perform(post("/quizzes")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.id").value(newId.toString()))
+        .andExpect(header().string("Location", endsWith("/quizzes/" + newId)));
+  }
+
+  /** POST /quizzes returns 400 when title is missing. */
+  @Test
+  void createQuiz_missingTitle_returns400() throws Exception {
+    String body = """
+        {
+          "description": "no title",
+          "questions": [
+            {
+              "text": "Q?",
+              "explanation": "exp",
+              "position": 1,
+              "options": [
+                {"text": "A", "position": 1},
+                {"text": "B", "position": 2}
+              ],
+              "correctOptionPosition": 1
+            }
+          ]
+        }
+        """;
+
+    mockMvc.perform(post("/quizzes")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+        .andExpect(status().isBadRequest());
+  }
+
+  /** POST /quizzes returns 400 when questions array is empty. */
+  @Test
+  void createQuiz_emptyQuestions_returns400() throws Exception {
+    String body = """
+        {
+          "title": "Quiz without questions",
+          "description": "desc",
+          "questions": []
+        }
+        """;
+
+    mockMvc.perform(post("/quizzes")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+        .andExpect(status().isBadRequest());
   }
 }

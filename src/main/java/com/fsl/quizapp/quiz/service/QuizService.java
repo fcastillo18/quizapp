@@ -1,17 +1,25 @@
 package com.fsl.quizapp.quiz.service;
 
+import com.fsl.quizapp.common.exception.BadRequestException;
 import com.fsl.quizapp.common.exception.ResourceNotFoundException;
+import com.fsl.quizapp.quiz.dto.CreateOptionRequest;
+import com.fsl.quizapp.quiz.dto.CreateQuestionRequest;
+import com.fsl.quizapp.quiz.dto.CreateQuizRequest;
+import com.fsl.quizapp.quiz.dto.CreatedQuizResponse;
 import com.fsl.quizapp.quiz.dto.OptionResponse;
 import com.fsl.quizapp.quiz.dto.QuestionResponse;
 import com.fsl.quizapp.quiz.dto.QuizDetailResponse;
 import com.fsl.quizapp.quiz.dto.QuizSummaryResponse;
+import com.fsl.quizapp.quiz.entity.Option;
 import com.fsl.quizapp.quiz.entity.Question;
+import com.fsl.quizapp.quiz.entity.Quiz;
 import com.fsl.quizapp.quiz.repository.QuizRepository;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Service handling quiz business logic. */
 @Service
@@ -41,6 +49,53 @@ public class QuizService {
     return quizRepository.findById(id)
         .map(q -> new QuizSummaryResponse(q.getId(), q.getTitle(), q.getDescription()))
         .orElseThrow(() -> new ResourceNotFoundException("Quiz", id));
+  }
+
+  /**
+   * Creates a new quiz with all its questions and options in a single transaction.
+   * Sets {@code correctOptionId} on each question after options are flushed.
+   *
+   * @param request the quiz creation payload
+   * @return the ID of the newly created quiz
+   * @throws BadRequestException if {@code correctOptionPosition} is out of range for any question
+   */
+  @Transactional
+  public CreatedQuizResponse createQuiz(CreateQuizRequest request) {
+    Quiz quiz = Quiz.builder()
+        .title(request.title())
+        .description(request.description())
+        .build();
+    quizRepository.save(quiz);
+
+    for (CreateQuestionRequest questionReq : request.questions()) {
+      if (questionReq.correctOptionPosition() < 1
+          || questionReq.correctOptionPosition() > questionReq.options().size()) {
+        throw new BadRequestException(
+            "correctOptionPosition " + questionReq.correctOptionPosition()
+            + " is out of range for question: " + questionReq.text());
+      }
+      Question question = Question.builder()
+          .quiz(quiz)
+          .text(questionReq.text())
+          .explanation(questionReq.explanation())
+          .position(questionReq.position())
+          .build();
+      for (CreateOptionRequest optionReq : questionReq.options()) {
+        Option option = Option.builder()
+            .question(question)
+            .text(optionReq.text())
+            .position(optionReq.position())
+            .build();
+        question.getOptions().add(option);
+      }
+      quiz.getQuestions().add(question);
+      // Flush to assign IDs to the new options before setting correctOptionId
+      quizRepository.flush();
+      Option correctOption = question.getOptions().get(questionReq.correctOptionPosition() - 1);
+      question.setCorrectOptionId(correctOption.getId());
+    }
+    quizRepository.save(quiz);
+    return new CreatedQuizResponse(quiz.getId());
   }
 
   /**

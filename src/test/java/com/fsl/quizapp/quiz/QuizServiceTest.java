@@ -2,9 +2,15 @@ package com.fsl.quizapp.quiz;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.fsl.quizapp.common.exception.BadRequestException;
 import com.fsl.quizapp.common.exception.ResourceNotFoundException;
+import com.fsl.quizapp.quiz.dto.CreateOptionRequest;
+import com.fsl.quizapp.quiz.dto.CreateQuestionRequest;
+import com.fsl.quizapp.quiz.dto.CreateQuizRequest;
+import com.fsl.quizapp.quiz.dto.CreatedQuizResponse;
 import com.fsl.quizapp.quiz.dto.QuizDetailResponse;
 import com.fsl.quizapp.quiz.dto.QuizSummaryResponse;
 import com.fsl.quizapp.quiz.entity.Option;
@@ -102,6 +108,54 @@ class QuizServiceTest {
 
     assertThatThrownBy(() -> quizService.getQuizDetails(unknown))
         .isInstanceOf(ResourceNotFoundException.class);
+  }
+
+  /** createQuiz saves the quiz and returns a response with a non-null ID. */
+  @Test
+  void createQuiz_validRequest_returnsCreatedWithId() {
+    UUID savedId = UUID.randomUUID();
+    when(quizRepository.save(any(Quiz.class))).thenAnswer(inv -> {
+      Quiz q = inv.getArgument(0);
+      q.setId(savedId);
+      return q;
+    });
+
+    CreateQuizRequest request = new CreateQuizRequest(
+        "My Quiz",
+        "desc",
+        List.of(new CreateQuestionRequest(
+            "What is 2+2?",
+            "Basic addition",
+            1,
+            List.of(
+                new CreateOptionRequest("3", 1),
+                new CreateOptionRequest("4", 2)),
+            2)));
+
+    CreatedQuizResponse response = quizService.createQuiz(request);
+
+    assertThat(response.id()).isEqualTo(savedId);
+  }
+
+  /** createQuiz throws BadRequestException when correctOptionPosition exceeds options size. */
+  @Test
+  void createQuiz_correctOptionPositionOutOfRange_throwsBadRequest() {
+    when(quizRepository.save(any(Quiz.class))).thenAnswer(inv -> inv.getArgument(0));
+
+    CreateQuizRequest request = new CreateQuizRequest(
+        "My Quiz",
+        null,
+        List.of(new CreateQuestionRequest(
+            "What is 2+2?",
+            "Basic addition",
+            1,
+            List.of(
+                new CreateOptionRequest("3", 1),
+                new CreateOptionRequest("4", 2)),
+            5)));
+
+    assertThatThrownBy(() -> quizService.createQuiz(request))
+        .isInstanceOf(BadRequestException.class);
   }
 
   /** getQuizDetails never exposes correctOptionId or explanation. */
