@@ -9,9 +9,13 @@ import static org.mockito.Mockito.when;
 import com.fsl.quizapp.attempt.dto.AttemptStartResponse;
 import com.fsl.quizapp.attempt.dto.StartAttemptRequest;
 import com.fsl.quizapp.attempt.entity.Attempt;
+import com.fsl.quizapp.attempt.repository.AnswerRepository;
 import com.fsl.quizapp.attempt.repository.AttemptRepository;
 import com.fsl.quizapp.attempt.service.AttemptService;
+import com.fsl.quizapp.attempt.service.ScoringService;
 import com.fsl.quizapp.common.exception.ResourceNotFoundException;
+import com.fsl.quizapp.notification.NotificationService;
+import com.fsl.quizapp.notification.repository.NotificationRepository;
 import com.fsl.quizapp.quiz.entity.Option;
 import com.fsl.quizapp.quiz.entity.Question;
 import com.fsl.quizapp.quiz.entity.Quiz;
@@ -35,6 +39,18 @@ class AttemptServiceTest {
 
   @Mock
   private QuizRepository quizRepository;
+
+  @Mock
+  private AnswerRepository answerRepository;
+
+  @Mock
+  private ScoringService scoringService;
+
+  @Mock
+  private NotificationRepository notificationRepository;
+
+  @Mock
+  private NotificationService notificationService;
 
   @InjectMocks
   private AttemptService attemptService;
