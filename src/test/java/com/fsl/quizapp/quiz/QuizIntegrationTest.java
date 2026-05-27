@@ -48,4 +48,47 @@ class QuizIntegrationTest {
         .andExpect(jsonPath("$[0].questions").doesNotExist())
         .andExpect(jsonPath("$[1].questions").doesNotExist());
   }
+
+  /** GET /quizzes/{id} returns 200 with quiz detail for seeded quiz 1. */
+  @Test
+  void getQuizDetails_returnsSeededQuiz1() throws Exception {
+    String id = "bbbbbbbb-0000-0000-0000-000000000001";
+
+    mockMvc.perform(get("/quizzes/" + id))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(id))
+        .andExpect(jsonPath("$.title").value("LLM Fundamentals"))
+        .andExpect(jsonPath("$.questions").isArray())
+        .andExpect(jsonPath("$.questions.length()").value(5));
+  }
+
+  /** GET /quizzes/{id} returns questions ordered by position ascending. */
+  @Test
+  void getQuizDetails_questionsOrderedByPosition() throws Exception {
+    String id = "bbbbbbbb-0000-0000-0000-000000000001";
+
+    mockMvc.perform(get("/quizzes/" + id))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.questions[0].position").value(1))
+        .andExpect(jsonPath("$.questions[1].position").value(2))
+        .andExpect(jsonPath("$.questions[2].position").value(3));
+  }
+
+  /** GET /quizzes/{id} response does not expose correctOptionId or explanation. */
+  @Test
+  void getQuizDetails_doesNotExposeCorrectOptionIdOrExplanation() throws Exception {
+    String id = "bbbbbbbb-0000-0000-0000-000000000001";
+
+    mockMvc.perform(get("/quizzes/" + id))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.questions[0].correctOptionId").doesNotExist())
+        .andExpect(jsonPath("$.questions[0].explanation").doesNotExist());
+  }
+
+  /** GET /quizzes/{id} returns 404 for unknown UUID. */
+  @Test
+  void getQuizDetails_returns404ForUnknownId() throws Exception {
+    mockMvc.perform(get("/quizzes/00000000-0000-0000-0000-000000000000"))
+        .andExpect(status().isNotFound());
+  }
 }

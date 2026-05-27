@@ -11,16 +11,15 @@ import org.springframework.data.repository.query.Param;
 public interface QuizRepository extends JpaRepository<Quiz, UUID> {
 
   /**
-   * Fetches a quiz with its questions and options in one query to avoid N+1 selects.
+   * Fetches a quiz with its questions eagerly to avoid N+1 selects.
+   * Options are batch-loaded via {@code @BatchSize} on the options collection.
    *
    * @param id the quiz UUID
-   * @return an Optional containing the quiz with all associations loaded, or empty if not found
+   * @return the quiz with questions loaded, or empty if not found
    */
   @Query(
       "SELECT DISTINCT q FROM Quiz q"
-          + " LEFT JOIN FETCH q.questions qn"
-          + " LEFT JOIN FETCH qn.options"
-          + " WHERE q.id = :id"
-          + " ORDER BY qn.position ASC")
+          + " LEFT JOIN FETCH q.questions"
+          + " WHERE q.id = :id")
   Optional<Quiz> findByIdWithQuestionsAndOptions(@Param("id") UUID id);
 }

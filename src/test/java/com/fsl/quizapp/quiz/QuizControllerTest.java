@@ -6,7 +6,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fsl.quizapp.common.exception.ResourceNotFoundException;
 import com.fsl.quizapp.quiz.controller.QuizController;
+import com.fsl.quizapp.quiz.dto.OptionResponse;
+import com.fsl.quizapp.quiz.dto.QuestionResponse;
+import com.fsl.quizapp.quiz.dto.QuizDetailResponse;
 import com.fsl.quizapp.quiz.dto.QuizSummaryResponse;
 import com.fsl.quizapp.quiz.service.QuizService;
 import java.util.List;
@@ -56,5 +60,38 @@ class QuizControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$").isEmpty());
+  }
+
+  /** GET /quizzes/{id} returns 200 with quiz detail including questions and options. */
+  @Test
+  void getQuizDetails_returns200WithDetail() throws Exception {
+    UUID quizId = UUID.fromString("bbbbbbbb-0000-0000-0000-000000000001");
+    UUID questionId = UUID.fromString("cccccccc-0000-0000-0000-000000000001");
+    UUID optId = UUID.randomUUID();
+    OptionResponse opt = new OptionResponse(optId, "option text", 1);
+    QuestionResponse question = new QuestionResponse(questionId, "question text", 1, List.of(opt));
+    QuizDetailResponse detail = new QuizDetailResponse(
+        quizId, "LLM Fundamentals", "description", List.of(question));
+    when(quizService.getQuizDetails(quizId)).thenReturn(detail);
+
+    mockMvc.perform(get("/quizzes/" + quizId))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(quizId.toString()))
+        .andExpect(jsonPath("$.title").value("LLM Fundamentals"))
+        .andExpect(jsonPath("$.questions[0].id").value(questionId.toString()))
+        .andExpect(jsonPath("$.questions[0].options[0].position").value(1))
+        .andExpect(jsonPath("$.questions[0].correctOptionId").doesNotExist())
+        .andExpect(jsonPath("$.questions[0].explanation").doesNotExist());
+  }
+
+  /** GET /quizzes/{id} returns 404 when quiz does not exist. */
+  @Test
+  void getQuizDetails_returns404WhenNotFound() throws Exception {
+    UUID unknown = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    when(quizService.getQuizDetails(unknown))
+        .thenThrow(new ResourceNotFoundException("Quiz", unknown));
+
+    mockMvc.perform(get("/quizzes/" + unknown))
+        .andExpect(status().isNotFound());
   }
 }

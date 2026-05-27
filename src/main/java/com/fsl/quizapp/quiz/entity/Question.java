@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 
 /** JPA entity representing a question within a quiz. */
 @Entity
@@ -54,6 +55,7 @@ public class Question {
   private UUID correctOptionId;
 
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @BatchSize(size = 20)
   @Builder.Default
   private List<Option> options = new ArrayList<>();
 }
