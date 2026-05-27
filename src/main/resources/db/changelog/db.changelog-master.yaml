@@ -1,5 +1,5 @@
 databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: fcastillo
-      changes: []
+  - include:
+      file: db/changelog/db.changelog-1.0-initial-schema.yaml
+  - include:
+      file: db/changelog/db.changelog-1.1-seed-data.yaml
