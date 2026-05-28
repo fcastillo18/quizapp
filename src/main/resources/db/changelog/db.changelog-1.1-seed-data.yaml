@@ -1,0 +1,994 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.1-seed-users
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: aaaaaaaa-0000-0000-0000-000000000001
+              - column:
+                  name: name
+                  value: "Alice Learner"
+              - column:
+                  name: email
+                  value: "alice@example.com"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: aaaaaaaa-0000-0000-0000-000000000002
+              - column:
+                  name: name
+                  value: "Bob Student"
+              - column:
+                  name: email
+                  value: "bob@example.com"
+
+  - changeSet:
+      id: 1.1-seed-quizzes
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: quizzes
+            columns:
+              - column:
+                  name: id
+                  value: bbbbbbbb-0000-0000-0000-000000000001
+              - column:
+                  name: title
+                  value: "LLM Fundamentals"
+              - column:
+                  name: description
+                  value: "Test your knowledge of large language model concepts and architectures."
+        - insert:
+            tableName: quizzes
+            columns:
+              - column:
+                  name: id
+                  value: bbbbbbbb-0000-0000-0000-000000000002
+              - column:
+                  name: title
+                  value: "Agent Design Patterns"
+              - column:
+                  name: description
+                  value: "Explore common patterns for building autonomous AI agent systems."
+
+  - changeSet:
+      id: 1.1-seed-questions-quiz1
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000001
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "What does LLM stand for?"
+              - column:
+                  name: explanation
+                  value: "LLM stands for Large Language Model — a type of neural network trained on vast text corpora."
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000002
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "Which training technique is used to align LLMs with human preferences?"
+              - column:
+                  name: explanation
+                  value: "RLHF (Reinforcement Learning from Human Feedback) is widely used to align LLM behavior with human intent."
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000003
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "What is the attention mechanism primarily used for in transformers?"
+              - column:
+                  name: explanation
+                  value: "The attention mechanism allows the model to weigh the relevance of different tokens in the input sequence when generating each output token."
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000004
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "What is a token in the context of LLMs?"
+              - column:
+                  name: explanation
+                  value: "A token is the basic unit of text that an LLM processes — it can be a word, subword, or character depending on the tokenizer."
+              - column:
+                  name: position
+                  valueNumeric: 4
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000005
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "Which of the following best describes 'temperature' in LLM inference?"
+              - column:
+                  name: explanation
+                  value: "Temperature controls the randomness of the model's output. Higher values produce more creative/varied outputs; lower values produce more deterministic ones."
+              - column:
+                  name: position
+                  valueNumeric: 5
+
+  - changeSet:
+      id: 1.1-seed-options-quiz1-q1
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000001
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "Large Language Model"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000002
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "Linear Learning Machine"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000003
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "Layered Linguistic Module"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000004
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000001
+              - column:
+                  name: text
+                  value: "Latent Logic Model"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz1-q2
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000005
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "Supervised Fine-Tuning (SFT)"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000006
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "Reinforcement Learning from Human Feedback (RLHF)"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000007
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "Contrastive Decoding"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000008
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "Beam Search"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz1-q3
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000009
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000003
+              - column:
+                  name: text
+                  value: "Compressing the input into a fixed-size vector"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000010
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000003
+              - column:
+                  name: text
+                  value: "Weighting the relevance of tokens relative to each other"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000011
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000003
+              - column:
+                  name: text
+                  value: "Randomly masking tokens during training"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000012
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000003
+              - column:
+                  name: text
+                  value: "Reducing the vocabulary size"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz1-q4
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000013
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000004
+              - column:
+                  name: text
+                  value: "A single character"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000014
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000004
+              - column:
+                  name: text
+                  value: "The basic unit of text processed by the model"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000015
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000004
+              - column:
+                  name: text
+                  value: "A full sentence"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000016
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000004
+              - column:
+                  name: text
+                  value: "A paragraph of text"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz1-q5
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000017
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000005
+              - column:
+                  name: text
+                  value: "The number of layers in the model"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000018
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000005
+              - column:
+                  name: text
+                  value: "A parameter controlling output randomness"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000019
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000005
+              - column:
+                  name: text
+                  value: "The model's training batch size"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000020
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000005
+              - column:
+                  name: text
+                  value: "The maximum context window length"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-correct-options-quiz1
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000001'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000001
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000002'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000006
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000003'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000010
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000004'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000014
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000005'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000018
+
+  - changeSet:
+      id: 1.1-seed-questions-quiz2
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000011
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "What is the ReAct pattern in AI agents?"
+              - column:
+                  name: explanation
+                  value: "ReAct combines Reasoning and Acting — the agent reasons about what to do, takes an action, observes the result, and repeats."
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000012
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "What does 'tool use' mean for an AI agent?"
+              - column:
+                  name: explanation
+                  value: "Tool use allows an agent to call external functions (APIs, databases, code executors) to accomplish tasks beyond its training data."
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000013
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "Which pattern involves an LLM that reviews and refines another LLM's output?"
+              - column:
+                  name: explanation
+                  value: "The Reflection pattern uses a critic model (or self-critique) to evaluate and improve a draft produced by a generator model."
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000014
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "What is the primary role of a planner in a multi-agent system?"
+              - column:
+                  name: explanation
+                  value: "A planner decomposes a high-level goal into a sequence of sub-tasks and assigns them to specialized executor agents."
+              - column:
+                  name: position
+                  valueNumeric: 4
+        - insert:
+            tableName: questions
+            columns:
+              - column:
+                  name: id
+                  value: cccccccc-0000-0000-0000-000000000015
+              - column:
+                  name: quiz_id
+                  value: bbbbbbbb-0000-0000-0000-000000000002
+              - column:
+                  name: text
+                  value: "What is 'grounding' in the context of AI agents?"
+              - column:
+                  name: explanation
+                  value: "Grounding connects the agent's knowledge to real-world facts through retrieval or tool calls, reducing hallucinations."
+              - column:
+                  name: position
+                  valueNumeric: 5
+
+  - changeSet:
+      id: 1.1-seed-options-quiz2-q1
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000021
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000011
+              - column:
+                  name: text
+                  value: "Retrieval-Augmented Computation"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000022
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000011
+              - column:
+                  name: text
+                  value: "Reasoning and Acting in an observe-think-act loop"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000023
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000011
+              - column:
+                  name: text
+                  value: "A fine-tuning technique for reinforcement learning"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000024
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000011
+              - column:
+                  name: text
+                  value: "A caching mechanism for prompt responses"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz2-q2
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000025
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000012
+              - column:
+                  name: text
+                  value: "The agent self-generates new training examples"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000026
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000012
+              - column:
+                  name: text
+                  value: "The agent calls external functions to get information or take actions"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000027
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000012
+              - column:
+                  name: text
+                  value: "The agent uses multiple prompts simultaneously"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000028
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000012
+              - column:
+                  name: text
+                  value: "The agent stores memory in a vector database"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz2-q3
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000029
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000013
+              - column:
+                  name: text
+                  value: "Chain-of-Thought"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000030
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000013
+              - column:
+                  name: text
+                  value: "Reflection"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000031
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000013
+              - column:
+                  name: text
+                  value: "RAG (Retrieval-Augmented Generation)"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000032
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000013
+              - column:
+                  name: text
+                  value: "Tool Orchestration"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz2-q4
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000033
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000014
+              - column:
+                  name: text
+                  value: "Execute individual tasks in parallel"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000034
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000014
+              - column:
+                  name: text
+                  value: "Decompose goals into sub-tasks and coordinate executor agents"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000035
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000014
+              - column:
+                  name: text
+                  value: "Store intermediate results in a shared cache"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000036
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000014
+              - column:
+                  name: text
+                  value: "Generate training data for fine-tuning"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-options-quiz2-q5
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000037
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000015
+              - column:
+                  name: text
+                  value: "Training the model on additional domain data"
+              - column:
+                  name: position
+                  valueNumeric: 1
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000038
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000015
+              - column:
+                  name: text
+                  value: "Connecting agent knowledge to real-world facts via retrieval or tools"
+              - column:
+                  name: position
+                  valueNumeric: 2
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000039
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000015
+              - column:
+                  name: text
+                  value: "Encrypting agent communications"
+              - column:
+                  name: position
+                  valueNumeric: 3
+        - insert:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  value: dddddddd-0000-0000-0000-000000000040
+              - column:
+                  name: question_id
+                  value: cccccccc-0000-0000-0000-000000000015
+              - column:
+                  name: text
+                  value: "Limiting the agent's maximum token output"
+              - column:
+                  name: position
+                  valueNumeric: 4
+
+  - changeSet:
+      id: 1.1-seed-correct-options-quiz2
+      author: fcastillo
+      onFail: MARK_RAN
+      changes:
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000011'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000022
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000012'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000026
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000013'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000030
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000014'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000034
+        - update:
+            tableName: questions
+            where: id = 'cccccccc-0000-0000-0000-000000000015'
+            columns:
+              - column:
+                  name: correct_option_id
+                  value: dddddddd-0000-0000-0000-000000000038
